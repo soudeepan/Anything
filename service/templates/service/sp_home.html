@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2, h3 {
+            color: #f58634;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .service-call-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .service-call-item .details {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .service-call-item .description {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .toggle-section {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .toggle-btn {
+            background-color: #f58634;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .toggle-btn:hover {
+            background-color: #e57222;
+        }
+        .response-form {
+            margin-top: 10px;
+        }
+        .response-form input[type="text"],
+        .response-form button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+        .response-form button {
+            background-color: #f58634;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .response-form button:hover {
+            background-color: #e57222;
+        }
+        a {
+            color: #f58634; /* orange link color */
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>This is Service Provider Home Page</h1>
+
+    <h3>Welcome, {{ service_provider.username }}</h3>
+
+    <a href="{% url 'service_provider_logout' %}">Logout</a>
+    <a href="{% url 'service_provider_response' %}">Go to Response Page</a>
+
+    <h2>Your Accepted Service Calls</h2>
+    <ul>
+        {% for accepted in accepted_service_calls %}
+            <li class="service-call-item">
+                <div class="details">
+                    <strong>{{ accepted.category }}</strong> - {{ accepted.location }} - {{ accepted.time }}<br>
+                    <strong>Customer :</strong> {{ accepted.customer_name }} ({{ accepted.customer_contact }})<br>
+                    <strong>Problem:</strong> {{ accepted.problem }}<br>
+                    <strong>Cost:</strong> {{ accepted.cost }}<br>
+                    <strong>Time Taken:</strong> {{ accepted.time_taken }} hours
+                    <a href="{% url 'service_provider_progression' accepted.id %}">Check Progress</a>
+                </div>
+            </li>
+        {% empty %}
+            <li>No accepted service calls yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Service Calls</h2>
+    <ul>
+        {% for call in service_calls_same %}
+            <li class="service-call-item">
+                <div class="details">
+                    <strong>{{ call.category }}</strong> - 
+                    <span>Location: {{ call.location }}</span> - 
+                    <span>Time: {{ call.time }}</span>
+                </div>
+
+                <div class="description">{{ call.description }}</div>
+
+                <button class="toggle-btn">More</button>
+
+                <div class="toggle-section">
+                    <form method="post" action="{% url 'service_provider_response_to_call' %}" class="response-form">
+                        {% csrf_token %}
+                        Cost: <input type="text" name="cost" required><br>
+                        Time Taken: <input type="text" name="time_taken" required><br>
+                        <input type="hidden" name="call_id" value="{{ call.id }}">
+                        <button type="submit">Response</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <ul>
+        {% for call in service_calls_diff %}
+            <li class="service-call-item">
+                <div class="details">
+                    <strong>{{ call.category }}</strong> - 
+                    <span>Location: {{ call.location }}</span> - 
+                    <span>Time: {{ call.time }}</span>
+                </div>
+
+                <div class="description">{{ call.description }}</div>
+
+                <button class="toggle-btn">More</button>
+
+                <div class="toggle-section">
+                    <form method="post" action="{% url 'service_provider_response_to_call' %}" class="response-form">
+                        {% csrf_token %}
+                        Cost: <input type="text" name="cost" required><br>
+                        Time Taken: <input type="text" name="time_taken" required><br>
+                        <input type="hidden" name="call_id" value="{{ call.id }}">
+                        <button type="submit">Response</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.toggle-btn').click(function() {
+                var $toggleSection = $(this).next('.toggle-section');
+                $toggleSection.slideToggle();
+                if ($toggleSection.is(':visible')) {
+                    $(this).text('Less');
+                } else {
+                    $(this).text('More');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

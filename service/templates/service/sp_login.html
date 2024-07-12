@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F9F6F7; /* Light grayish background */
+            color: #555;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #FFFFFF; /* White background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            color: #FF971D; /* Bright orange for heading */
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="submit"] {
+            background-color: #FF971D; /* Bright orange submit button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        input[type="submit"]:hover {
+            background-color: #FFE8D6; /* Light orange on hover */
+            color: #555;
+        }
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #FF971D; /* Bright orange link color */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Service Provider Login</h2>
+
+    <form autocomplete="off" method="post">
+
+        {% csrf_token %}
+
+        {{ loginform.as_p }}
+
+        <input type="submit" value="Login">
+
+    </form>
+
+    <a href="{% url 'service_provider_signup' %}">Not registered yet? Sign up as a Service Provider</a>
+    <a href="{% url 'customer_login' %}">Login as a Customer</a>
+</div>
+
+</body>
+</html>

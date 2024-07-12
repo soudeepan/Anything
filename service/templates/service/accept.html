@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Responses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8; /* off-white background */
+            color: #333; /* dark text color */
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2 {
+            color: #f58634; /* orange heading color */
+        }
+        a {
+            color: #f58634; /* orange link color */
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff; /* white background for list items */
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* subtle shadow */
+        }
+        li:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* slightly stronger shadow on hover */
+        }
+        strong {
+            color: #333; /* dark color for strong tags */
+        }
+        .accept-link {
+            background-color: #f58634;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+        .accept-link:hover {
+            background-color: #e57222;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>List of Responses to My Service</h1>
+
+    <a href="{% url 'customer_home' %}">Back to Home</a>
+
+    <h2>Service Information</h2>
+    <p><strong>Category:</strong> {{ service_call.category }}</p>
+    <p><strong>Location:</strong> {{ service_call.location }}</p>
+    <p><strong>Time:</strong> {{ service_call.time }}</p>
+    <p><strong>Description:</strong> {{ service_call.description }}</p>
+
+    <h2>Response Calls</h2>
+    <ul>
+        {% for response in response_calls %}
+            <li>
+                <strong>Service Provider:</strong> {{ response.service_provider_id.user.username }}<br>
+                <strong>Cost:</strong> Rs.{{ response.cost }}<br>
+                <strong>Time Taken:</strong> {{ response.time_taken }} hours<br>
+
+                <a href="{% url 'accept_response' response.id %}" class="accept-link">Accept</a>
+
+            </li>
+        {% empty %}
+            <li>No responses yet.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

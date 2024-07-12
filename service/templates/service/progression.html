@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Progress</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8; /* off-white background */
+            color: #333; /* dark text color */
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2, h3 {
+            color: #f58634; /* orange heading color */
+        }
+        a {
+            color: #f58634; /* orange link color */
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #f58634; /* orange button background */
+            color: #fff; /* button text color */
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #e57222; /* darker orange on hover */
+        }
+        form {
+            margin-top: 10px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Service Progress</h1>
+
+    <a href="{% url 'customer_home' %}">Back to Home</a>
+
+    <button onclick="window.location.reload();">Reload</button>
+
+    <h2>Accepted Service Details</h2>
+    <p><strong>Category:</strong> {{ accepted_service.category }}</p>
+    <p><strong>Location:</strong> {{ accepted_service.location }}</p>
+    <p><strong>Time:</strong> {{ accepted_service.time }}</p>
+    <p><strong>Service Provider:</strong> {{ accepted_service.service_provider_name }} ({{ accepted_service.service_provider_contact }})</p>
+    <p><strong>Problem:</strong> {{ accepted_service.problem }}</p>
+    <p><strong>Cost:</strong> {{ accepted_service.cost }}</p>
+    <p><strong>Time Taken:</strong> {{ accepted_service.time_taken }} hours</p>
+
+    <h3>Progress</h3>
+    <p><strong>Venue Reached:</strong> {{ accepted_service.venue_reached|yesno:"Yes,No" }}</p>
+    <p><strong>Service Provided:</strong> {{ accepted_service.service_provided|yesno:"Yes,No" }}</p>
+    {% if not accepted_service.service_approval_customer %}
+        <form method="post" action="{% url 'customer_approve_service' accepted_service.id %}">
+            {% csrf_token %}
+            <button type="submit">Approve Service Provided</button>
+        </form>
+    {% endif %}
+    <p><strong>Payment Received:</strong> {{ accepted_service.payment_received|yesno:"Yes,No" }}</p>
+    {% if not accepted_service.payment_approval_customer %}
+        <form method="post" action="{% url 'customer_approve_payment' accepted_service.id %}">
+            {% csrf_token %}
+            <button type="submit">Approve Payment Received</button>
+        </form>
+    {% endif %}
+
+    <form method="post" action="{% url 'customer_service_done' accepted_service.id %}">
+        {% csrf_token %}
+        <button type="submit">Done</button>
+    </form>
+</body>
+</html>

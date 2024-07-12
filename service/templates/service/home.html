@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8; /* off-white background */
+            color: #333; /* dark text color */
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2, h3 {
+            color: #f58634; /* orange heading color */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff; /* white background for list items */
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* subtle shadow */
+            border-left: 6px solid #f58634; /* orange left border */
+        }
+        li:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* slightly stronger shadow on hover */
+        }
+        li div {
+            margin-top: 10px;
+            color: #666; /* slightly darker text for description */
+        }
+        strong {
+            color: #333; /* dark color for strong tags */
+        }
+        a {
+            color: #f58634; /* orange link color */
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        form {
+            display: inline;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #f58634; /* orange button background */
+            color: #fff; /* button text color */
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e57222; /* darker orange on hover */
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>Welcome to Your Customer Dashboard</h1>
+
+    <h3>Hello, {{ user.username }}</h3>
+
+    <a href="{% url 'customer_logout' %}">Logout</a>
+    <a href="{% url 'customer_service_call' %}">Request New Service</a>
+
+    <h2>Accepted Service Requests</h2>
+    <ul>
+        {% for accepted in accepted_service_calls %}
+            <li>
+                <strong>{{ accepted.category }}</strong> - {{ accepted.location }} - {{ accepted.time }}<br>
+                <strong>Service Provider:</strong> {{ accepted.service_provider_name }} ({{ accepted.service_provider_contact }})<br>
+                <strong>Issue:</strong> {{ accepted.problem }}<br>
+                <strong>Cost:</strong> {{ accepted.cost }}<br>
+                <strong>Time Taken:</strong> {{ accepted.time_taken }} hours
+                <a href="{% url 'customer_progression' accepted.id %}">Track Progress</a>
+            </li>
+        {% empty %}
+            <li>No accepted service requests yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Your Service Requests</h2>
+    <ul>
+        {% for call in service_calls %}
+            <li>
+                <strong>{{ call.category }}</strong> - {{ call.location }} - {{ call.time }}
+                <div>
+                    {{ call.description }}
+                </div>
+
+                <form method="post" action="{% url 'customer_accept' call.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="service_call_id" value="{{ call.id }}">
+                    <button type="submit">View Response</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>No service requests made yet.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
